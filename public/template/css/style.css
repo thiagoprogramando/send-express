@@ -48,3 +48,7 @@ button:hover {
     width: 50% !important;
     height: auto !important;
 }
+
+table {
+    font-size: 12px !important;
+}

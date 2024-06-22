@@ -12,10 +12,13 @@
     
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('template/css/mdb.min.css') }}"/>
     <link rel="stylesheet" href="{{ asset('template/css/style.css') }}"/>
 
     <script src="{{ asset('template/js/sweetalert.js')}}"></script>
+    <script src="{{ asset('template/js/jquery.js') }}"></script>
+    <script src="{{ asset('template/js/tom-select.complete.min.js') }}"></script>
   </head>
   <body class="container">
 
@@ -37,7 +40,7 @@
                         <a class="nav-link text-white" href="{{ route('app') }}">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-reset" href="#">Vendas</a>
+                        <a class="nav-link text-reset" href="{{ route('list-sales') }}">Vendas</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-reset" href="{{ route('list-product') }}">Produtos</a>
@@ -183,6 +186,22 @@
                     });
                 });
             });
+        });
+
+        new TomSelect(".select-user",{
+            create: false,
+            sortField: {
+                field: "text",
+                direction: "asc"
+            }
+        });
+
+        new TomSelect(".select-product",{
+            create: false,
+            sortField: {
+                field: "text",
+                direction: "asc"
+            }
         });
         
     </script>

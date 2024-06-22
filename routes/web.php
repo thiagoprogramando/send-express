@@ -5,8 +5,10 @@ use App\Http\Controllers\Access\LoginController;
 use App\Http\Controllers\Access\RegisterController;
 use App\Http\Controllers\AppController;
 use App\Http\Controllers\Product\ProductController;
+use App\Http\Controllers\Sale\SaleManagerController;
 use App\Http\Controllers\Sale\SendExpressController;
 use App\Http\Controllers\User\UserController;
+
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -40,6 +42,9 @@ Route::middleware(['auth'])->group(function () {
     //User
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
     Route::post('update-user', [UserController::class, 'updateUser'])->name('update-user');
+
+    //Sale
+    Route::get('/list-sales', [SaleManagerController::class, 'listSales'])->name('list-sales');
 
     Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 });
