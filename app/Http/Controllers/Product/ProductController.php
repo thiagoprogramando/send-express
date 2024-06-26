@@ -3,11 +3,15 @@
 namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\Controller;
+
 use App\Models\Images;
 use App\Models\Product;
+use App\Models\Sale;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
 
 class ProductController extends Controller {
     
@@ -58,14 +62,21 @@ class ProductController extends Controller {
             $product->pix_installments       = $request->pix_installments;
 
             if ($request->hasFile('file')) {
+
                 $file = $request->file('file');
+
+                $maxSize = 25 * 1024 * 1024;
+                if($file->getSize() > $maxSize) {
+                    return redirect()->back()->with('error', 'O arquivo é muito grande, tamanho máx: 25mb!');
+                }
+
                 $path = $file->store('files-products', 'public');
-        
                 $product->file = $path;
             }
 
-            if($product->save()) {
-                return redirect()->back()->with('success', 'Dados atualizados com sucesso!');
+            if ($product->save()) {
+
+                return redirect()->back()->with('success', 'Dados atualizados!');
             }
 
             return redirect()->back()->with('error', 'Não foi possível atualizar os dados, tente novamente mais tarde!');
@@ -77,11 +88,26 @@ class ProductController extends Controller {
     public function deleteProduct(Request $request) {
 
         $product = Product::find($request->id);
-        if($product && $product->delete()) {
-            return redirect()->back()->with('success', 'Produto deletado com sucesso!');
+        if ($product) {
+            DB::beginTransaction();
+            try {
+                
+                $sales = Sale::where('id_product', $product->id)->get();
+                foreach ($sales as $sale) {
+                    $sale->delete();
+                }
+    
+                $product->delete();
+    
+                DB::commit();
+                return redirect()->back()->with('success', 'Produto deletado com sucesso!');
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return redirect()->back()->with('error', 'Não foi possível excluir o produto e suas vendas associadas. Erro: ' . $e->getMessage());
+            }
         }
-
-        return redirect()->back()->with('error', 'Não foi possível deletar os dados do Produto, tente novamente mais tarde!');
+    
+        return redirect()->back()->with('error', 'Produto não encontrado. Tente novamente mais tarde!');
     }
 
     public function sendImageProduct(Request $request) {
