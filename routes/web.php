@@ -25,6 +25,7 @@ Route::get('forgout', [ForgoutController::class, 'forgout'])->name('forgout');
 Route::post('send-forgout', [ForgoutController::class, 'sendForgout'])->name('send-forgout');
 
 Route::get('/send-express/{product}/{seller}', [SendExpressController::class, 'checkoutExpress'])->name('send-express');
+Route::get('/thank-you', [SendExpressController::class, 'thankYou'])->name('thank-you');
 Route::post('send-sale', [SendExpressController::class, 'sendSale'])->name('send-sale');
 
 Route::middleware(['auth'])->group(function () {

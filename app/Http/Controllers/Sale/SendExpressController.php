@@ -31,6 +31,11 @@ class SendExpressController extends Controller {
         // Retornar página de produto indisponível
     }
 
+    public function thankYou() {
+
+        return view('checkout.thank-you');
+    }
+
     public function sendSale(Request $request) {
 
         $client = $this->createClient($request->name, $request->email, $request->cpfcnpj, $request->phone, $request->saller);
