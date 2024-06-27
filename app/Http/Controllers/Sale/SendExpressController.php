@@ -45,13 +45,13 @@ class SendExpressController extends Controller {
 
         switch($request->method) {
             case 'PIX':
-                $payment = $this->createPix($client->customer, $request->value, $request->installments, $product->name);
+                $payment = $this->createPix($client->customer, $request->value, $request->installments, $product->name, $product->url_redirect);
                 break;
             case 'BOLETO':
-                $payment = $this->createBoleto($client->customer, $request->value, $request->installments, $product->name);
+                $payment = $this->createBoleto($client->customer, $request->value, $request->installments, $product->name, $product->url_redirect);
                 break;
             case 'CREDIT_CARD':
-                $payment = $this->createCredit($client->customer, $request->value, $request->installments, $product->name);
+                $payment = $this->createCredit($client->customer, $request->value, $request->installments, $product->name, $product->url_redirect);
                 break;
             default:
                 return redirect()->back()->with('error', 'Nenhuma forma de pagamento informada!');
@@ -130,7 +130,7 @@ class SendExpressController extends Controller {
         }
     }
 
-    private function createPix($customer, $value, $installments, $description) {
+    private function createPix($customer, $value, $installments, $description, $url = null) {
 
         $client = new Client();
 
@@ -147,6 +147,10 @@ class SendExpressController extends Controller {
                 'description'       => $description,
                 'installmentCount'  => $installments > 1 ? $installments : 1,
                 'installmentValue'  => $installments > 1 ? number_format(($value / intval($installments)), 2, '.', '') : $value,
+                'callback'          => [
+                    'successUrl'   => $url ?: env('THANK_YOU'),
+                    'autoRedirect' => true
+                ]
             ],
             'verify' => false
         ];
@@ -172,7 +176,7 @@ class SendExpressController extends Controller {
         }
     }
 
-    private function createBoleto($customer, $value, $installments, $description) {
+    private function createBoleto($customer, $value, $installments, $description, $url = null) {
 
         $client = new Client();
 
@@ -189,6 +193,10 @@ class SendExpressController extends Controller {
                 'description'       => $description,
                 'installmentCount'  => $installments > 1 ? $installments : 1,
                 'installmentValue'  => $installments > 1 ? number_format(($value / intval($installments)), 2, '.', '') : $value,
+                'callback'          => [
+                    'successUrl'   => $url ?: env('THANK_YOU'),
+                    'autoRedirect' => true
+                ]
             ],
             'verify' => false
         ];
@@ -214,7 +222,7 @@ class SendExpressController extends Controller {
         }
     }
 
-    private function createCredit($customer, $value, $installments, $description) {
+    private function createCredit($customer, $value, $installments, $description, $url = null) {
 
         $client = new Client();
 
@@ -231,6 +239,10 @@ class SendExpressController extends Controller {
                 'description'       => $description,
                 'installmentCount'  => $installments > 1 ? $installments : 1,
                 'installmentValue'  => $installments > 1 ? number_format(($value / intval($installments)), 2, '.', '') : $value,
+                'callback'          => [
+                    'successUrl'   => $url ?: env('THANK_YOU'),
+                    'autoRedirect' => true
+                ]
             ],
             'verify' => false
         ];
