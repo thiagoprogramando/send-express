@@ -32,6 +32,10 @@ class Product extends Model {
         'views',
     ];
 
+    public function seller() {
+        return $this->belongsTo(User::class, 'id_user');
+    }
+
     public function statusLabel() {
 
         switch ($this->status) {
