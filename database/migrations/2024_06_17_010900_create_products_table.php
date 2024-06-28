@@ -25,7 +25,7 @@ return new class extends Migration {
             $table->integer('pix_installments')->default(1);
 
             $table->longText('url_redirect')->nullable();
-            $table->string('status')->default('pendent'); // default status is pendent
+            $table->integer('status')->default(0); // default status is pendent (0)
             $table->unsignedBigInteger('views')->default(0); // default views is 0
 
             $table->timestamps();

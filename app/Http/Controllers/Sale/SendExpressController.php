@@ -11,6 +11,7 @@ use App\Models\User;
 
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 class SendExpressController extends Controller {
@@ -18,8 +19,13 @@ class SendExpressController extends Controller {
     public function checkoutExpress($product, $seller) {
 
         $product = Product::find($product);
-        if($product) {
+        if($product && $product->status == 1) {
 
+            if(!Auth::check()) {
+                $product->views += 1;
+                $product->save();
+            }
+            
             $images = Images::where('id_product', $product->id)->get();
             return view('checkout.checkout', [
                 'product' => $product,
@@ -28,7 +34,7 @@ class SendExpressController extends Controller {
             ]);
         }
 
-        // Retornar página de produto indisponível
+        return view('checkout.default', ['product' => $product]);
     }
 
     public function thankYou() {
